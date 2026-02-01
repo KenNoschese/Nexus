@@ -1,5 +1,6 @@
 import { db } from "@/app/db";
 import { tasks } from "@/app/db/schema";
+import DeleteTaskButton from "./deleteTaskButton";
 
 export default async function Taskboard() {
   const allTasks = await db.select().from(tasks);
@@ -33,17 +34,22 @@ export default async function Taskboard() {
               tasksByEnergy[level].map((task) => (
                 <div 
                   key={task.id} 
-                  className="group bg-white/5 border border-gray-800 p-4 rounded-xl hover:border-gray-600 transition-all cursor-pointer"
+                  className="group bg-white/5 border border-gray-800 p-4 rounded-xl hover:border-gray-600 transition-all cursor-pointer flex justify-between items-start"
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col">
                     <span className={`font-medium ${task.status === 'completed' ? 'line-through text-gray-600' : 'text-gray-200'}`}>
                       {task.title}
                     </span>
-                    {task.status === 'completed' ? (
-                      <span className="text-green-500 text-sm">✓</span>
-                    ) : (
+                    {task.status !== 'completed' && (
                       <span className="text-gray-600 group-hover:text-blue-400 text-xs">Active</span>
                     )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {task.status === 'completed' && (
+                      <span className="text-green-500 text-sm">✓</span>
+                    )}
+                    <DeleteTaskButton taskId={task.id} />
                   </div>
                 </div>
               ))
