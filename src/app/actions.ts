@@ -4,36 +4,26 @@ import { db } from "@/app/db";
 import { tasks, users } from "@/app/db/schema";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export async function createTask(formData: FormData) {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) throw new Error("You must be logged in to create a task");
+
   const title = formData.get("title") as string;
   const rawEnergyLevel = formData.get("energyLevel") as string;
+  
+  if (!title) return;
+
   const validEnergyLevels = ["high", "medium", "low"];
   const energyLevel = validEnergyLevels.includes(rawEnergyLevel) 
     ? (rawEnergyLevel as "high" | "medium" | "low") 
     : "medium";
 
-  if (!title) return;
-
-  let userId: string;
-
-  const existingUsers = await db.select().from(users).limit(1);
-
-  if (existingUsers.length > 0) {
-    userId = existingUsers[0].id;
-  } else {
-    const newUsers = await db.insert(users).values({
-      email: "demo@example.com",
-      fullName: "Demo User",
-      passwordHash: "placeholder",
-    }).returning({ id: users.id });
-    userId = newUsers[0].id;
-  }
-
   await db.insert(tasks).values({
     title,
-    energyLevel: energyLevel || "medium",
-    userId,
+    energyLevel,
+    userId: clerkId, 
   });
 
   revalidatePath("/");
@@ -42,4 +32,39 @@ export async function createTask(formData: FormData) {
 export async function deleteTask(taskId: string) {
   await db.delete(tasks).where(eq(tasks.id, taskId));
   revalidatePath("/");
+}
+
+export async function linkMoodleAccount(formData: FormData) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const username = formData.get('username') as string;
+  const password = formData.get('password') as string;
+
+  const loginRes = await fetch(`https://daigler25.addu.edu.ph/login/token.php`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      username: username,
+      password: password,
+      service: 'moodle_mobile_app'
+    })
+  });
+  const { token } = await loginRes.json();
+
+  if (!token) return { error: "Failed to link: Check your AdDU credentials." };
+
+  const infoRes = await fetch(`https://daigler25.addu.edu.ph/webservice/rest/server.php?wstoken=${token}&wsfunction=core_webservice_get_site_info&moodlewsrestformat=json`);
+  const { userid: moodleUserId } = await infoRes.json();
+
+  const client = await clerkClient();
+  await client.users.updateUserMetadata(userId, {
+    privateMetadata: {
+      moodleToken: token,
+      moodleUserId: moodleUserId,
+      moodleLinked: true
+    }
+  });
+
+  return { success: true };
 }
