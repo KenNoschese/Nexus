@@ -7,7 +7,7 @@ async function progressbar() {
     const { userId } = await auth();
     if (!userId) return null;
 
-    let allTasks = [];
+    let allTasks: typeof tasks.$inferSelect[] = [];
     try {
       allTasks = await db.select().from(tasks).where(eq(tasks.userId, userId));
     } catch (error) {
