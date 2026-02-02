@@ -3,7 +3,7 @@ import { getEnrolledCourses } from "../lib/moodle";
 
 async function courses() {
     const user = await currentUser();
-      const metadata = user?.privateMetadata;
+    const metadata = user?.privateMetadata;
     
   const courses = (metadata?.moodleToken && metadata?.moodleUserId) 
     ? await getEnrolledCourses(

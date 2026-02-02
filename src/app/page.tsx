@@ -5,7 +5,7 @@ import Progressbar from "../../components/progressbar";
 import LinkedAccount from "../../components/linkedAccount";
 import { currentUser } from "@clerk/nextjs/server";
 import { getEnrolledCourses, logEnrolledCourses, getCourseAssignments } from "../../lib/moodle";
-
+import Summary from "../../components/summary";
 
 export default async function Home() {
   const user = await currentUser();
@@ -18,27 +18,27 @@ export default async function Home() {
       )
     : [];
 
-  // Log the raw data to the console so the user can inspect it
-  if (metadata?.moodleToken && metadata?.moodleUserId) {
-    /*
-    await logEnrolledCourses(
-      metadata.moodleToken as string,
-      metadata.moodleUserId as number
-    );
-    */
+  // // Log the raw data to the console so the user can inspect it
+  // if (metadata?.moodleToken && metadata?.moodleUserId) {
+  //   /*
+  //   await logEnrolledCourses(
+  //     metadata.moodleToken as string,
+  //     metadata.moodleUserId as number
+  //   );
+  //   */
 
-    if (courses.length > 0) {
-      try {
-        const courseIds = courses.map((c: any) => c.id);
-        const assignmentsData = await getCourseAssignments(metadata.moodleToken as string, courseIds);
-        console.log("--- Nexus Academic Data: Assignments Found ---");
-        console.dir(assignmentsData, { depth: null });
-        console.log("----------------------------------------------");
-      } catch (e) {
-        console.error("Failed to fetch assignments:", e);
-      }
-    }
-  }
+  //   if (courses.length > 0) {
+  //     try {
+  //       const courseIds = courses.map((c: any) => c.id);
+  //       const assignmentsData = await getCourseAssignments(metadata.moodleToken as string, courseIds);
+  //       console.log("--- Nexus Academic Data: Assignments Found ---");
+  //       console.dir(assignmentsData, { depth: null });
+  //       console.log("----------------------------------------------");
+  //     } catch (e) {
+  //       console.error("Failed to fetch assignments:", e);
+  //     }
+  //   }
+  // }
 
   return (
     <main className="min-h-screen bg-background p-6 md:p-12">
@@ -50,12 +50,12 @@ export default async function Home() {
           <h2 className="text-xl font-semibold mt-4">Welcome back, {user?.firstName}</h2>
         </header>
 
-        
-        <Addtask />
-        <Progressbar />
-        <Taskboard />
-        <LinkedAccount />
-      </div>
+        <Summary />
+                <Addtask />
+                <Progressbar />
+                <Taskboard />
+                <LinkedAccount isLinked={!!metadata?.moodleLinked} />
+              </div>
     </main>
   );
 }

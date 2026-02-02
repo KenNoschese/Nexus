@@ -60,3 +60,20 @@ export async function getCourseAssignments(token: string, courseIds: number[]) {
   
   return await response.json();
 }
+
+export async function getAssignmentSubmissions(token: string, assignmentIds: number[]) {
+  const params = new URLSearchParams({
+    wstoken: token,
+    wsfunction: "mod_assign_get_submissions",
+    moodlewsrestformat: "json",
+  });
+
+  assignmentIds.forEach((id, index) => {
+    params.append(`assignmentids[${index}]`, id.toString());
+  });
+
+  const response = await fetch(`${MOODLE_URL}?${params.toString()}`);
+  if (!response.ok) throw new Error("Failed to fetch submissions");
+
+  return await response.json();
+}
