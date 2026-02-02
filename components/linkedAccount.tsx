@@ -13,7 +13,7 @@ function linkedAccount() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <form action={handleSubmit} className="p-8 border rounded-lg shadow-md bg-white w-96">
-        <h1 className="text-2xl text-black font-bold mb-6">Login to Nexus</h1>
+        <h1 className="text-2xl text-black font-bold mb-6">Login to Daigler25</h1>
         
         <input name="username" placeholder="ID Number" className="w-full text-black p-2 mb-4 border rounded" required />
         <input name="password" type="password" placeholder="Moodle Password" className="w-full text-black p-2 mb-4 border rounded" required />

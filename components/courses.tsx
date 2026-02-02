@@ -5,10 +5,12 @@ async function courses() {
     const user = await currentUser();
       const metadata = user?.privateMetadata;
     
-      const courses = await getEnrolledCourses(
-        metadata?.moodleToken as string, 
-        metadata?.moodleUserId as number
-      );
+  const courses = (metadata?.moodleToken && metadata?.moodleUserId) 
+    ? await getEnrolledCourses(
+        metadata.moodleToken as string, 
+        metadata.moodleUserId as number
+      )
+    : [];
   return (
     <section className="space-y-4">
           <h3 className="text-2xl font-bold">Your Enrolled Courses</h3>

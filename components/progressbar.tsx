@@ -1,8 +1,18 @@
 import { db } from "@/app/db";
 import { tasks } from "@/app/db/schema";
+import { auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 
 async function progressbar() {
-    const allTasks = await db.select().from(tasks);
+    const { userId } = await auth();
+    if (!userId) return null;
+
+    let allTasks = [];
+    try {
+      allTasks = await db.select().from(tasks).where(eq(tasks.userId, userId));
+    } catch (error) {
+      console.error("Failed to fetch tasks for progressbar:", error);
+    }
       
       const completedCount = allTasks.filter(t => t.status === 'completed').length;
       const totalCount = allTasks.length;

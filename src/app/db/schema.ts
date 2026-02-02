@@ -6,10 +6,10 @@ export const taskStatusEnum = pgEnum('task_status', ['active', 'ongoing', 'compl
 export const resourceTypeEnum = pgEnum('resource_type', ['file', 'url', 'note']);
 
 export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-  fullName: varchar('full_name', { length: 255 }).notNull(),
+  id: varchar('id', { length: 255 }).primaryKey(),
+  email: varchar('email', { length: 255 }).unique(),
+  passwordHash: varchar('password_hash', { length: 255 }),
+  fullName: varchar('full_name', { length: 255 }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   lastLogin: timestamp('last_login', { withTimezone: true }),
@@ -19,7 +19,7 @@ export const users = pgTable('users', {
 
 export const tasks = pgTable('tasks', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 500 }).notNull(),
   description: text('description'),
   energyLevel: energyLevelEnum('energy_level').notNull(),

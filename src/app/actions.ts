@@ -20,6 +20,9 @@ export async function createTask(formData: FormData) {
     ? (rawEnergyLevel as "high" | "medium" | "low") 
     : "medium";
 
+  // Ensure user exists in our DB to satisfy foreign key constraint
+  await db.insert(users).values({ id: clerkId }).onConflictDoNothing();
+
   await db.insert(tasks).values({
     title,
     energyLevel,

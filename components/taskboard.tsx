@@ -1,9 +1,19 @@
 import { db } from "@/app/db";
 import { tasks } from "@/app/db/schema";
 import DeleteTaskButton from "./deleteTaskButton";
+import { auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 
 export default async function Taskboard() {
-  const allTasks = await db.select().from(tasks);
+  const { userId } = await auth();
+  if (!userId) return null;
+
+  let allTasks: typeof tasks.$inferSelect[] = [];
+  try {
+    allTasks = await db.select().from(tasks).where(eq(tasks.userId, userId));
+  } catch (error) {
+    console.error("Failed to fetch tasks for taskboard:", error);
+  }
 
   const tasksByEnergy = {
     high: allTasks.filter(t => t.energyLevel === 'high'),

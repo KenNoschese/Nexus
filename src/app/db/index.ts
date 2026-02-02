@@ -1,9 +1,13 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 
 if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL must be a Neon postgres connection string');
+  throw new Error('DATABASE_URL is missing');
 }
 
-const sql = neon(process.env.DATABASE_URL);
-export const db = drizzle(sql);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+export const db = drizzle(pool);

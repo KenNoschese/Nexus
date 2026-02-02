@@ -4,17 +4,41 @@ import Addtask from "../../components/addtask";
 import Progressbar from "../../components/progressbar";
 import LinkedAccount from "../../components/linkedAccount";
 import { currentUser } from "@clerk/nextjs/server";
-import { getEnrolledCourses } from "../../lib/moodle";
+import { getEnrolledCourses, logEnrolledCourses, getCourseAssignments } from "../../lib/moodle";
 
 
 export default async function Home() {
   const user = await currentUser();
   const metadata = user?.privateMetadata;
 
-  const courses = await getEnrolledCourses(
-    metadata?.moodleToken as string, 
-    metadata?.moodleUserId as number
-  );
+  const courses = (metadata?.moodleToken && metadata?.moodleUserId) 
+    ? await getEnrolledCourses(
+        metadata.moodleToken as string, 
+        metadata.moodleUserId as number
+      )
+    : [];
+
+  // Log the raw data to the console so the user can inspect it
+  if (metadata?.moodleToken && metadata?.moodleUserId) {
+    /*
+    await logEnrolledCourses(
+      metadata.moodleToken as string,
+      metadata.moodleUserId as number
+    );
+    */
+
+    if (courses.length > 0) {
+      try {
+        const courseIds = courses.map((c: any) => c.id);
+        const assignmentsData = await getCourseAssignments(metadata.moodleToken as string, courseIds);
+        console.log("--- Nexus Academic Data: Assignments Found ---");
+        console.dir(assignmentsData, { depth: null });
+        console.log("----------------------------------------------");
+      } catch (e) {
+        console.error("Failed to fetch assignments:", e);
+      }
+    }
+  }
 
   return (
     <main className="min-h-screen bg-background p-6 md:p-12">
