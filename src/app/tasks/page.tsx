@@ -1,4 +1,4 @@
-import Taskboard from "../../../components/taskboard"
+import Taskboard from "../../../components/taskMain"
 
 function page() {
   return (
