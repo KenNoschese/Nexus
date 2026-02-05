@@ -71,3 +71,21 @@ export async function linkMoodleAccount(formData: FormData) {
 
   return { success: true };
 }
+
+export async function unlinkModdleAccount() {
+  const { userId } = await auth();
+
+  if(!userId) throw new Error ("Unauthorized");
+
+  const client = await clerkClient();
+
+  await client.users.updateUserMetadata(userId, {
+    privateMetadata: {
+      moodleToken: null,
+      moodleUserId: null, 
+      moodleLinked: false
+    }
+  });
+
+  return {success: true};
+}

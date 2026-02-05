@@ -8,7 +8,6 @@ export default function CoursesPage() {
       <p className="text-gray-500 mt-4">Manage your academic courses and materials.</p>
       <Assignments />
       <Courses />
-      
     </div>
   );
 }

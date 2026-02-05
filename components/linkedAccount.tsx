@@ -1,23 +1,38 @@
 'use client'
 
-import { linkMoodleAccount } from '@/app/actions'
-import { useState } from 'react'
+import { linkMoodleAccount, unlinkModdleAccount } from '@/app/actions'
+import { useRouter } from 'next/navigation';
+import { useReducer, useState } from 'react'
 
 function LinkedAccount({ isLinked }: { isLinked: boolean }) {
   const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(formData: FormData) {
-    const result = await linkMoodleAccount(formData)
+    const result = await linkMoodleAccount(formData);
     if (result?.error) setError(result.error)
+  }
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const result = await unlinkModdleAccount();
+    if (result.success) {
+      router.refresh();
+    }
   }
 
   if (isLinked) {
     return (
       <div className="flex items-center justify-between p-8 bg-white/5 border border-gray-800 rounded-2xl md:w-full">
-        <h1 className="text-xl font-bold">Daigler25</h1>
-        <div className="flex items-center gap-2 px-6 py-2 bg-green-500/10 border border-green-500/20 text-green-500 rounded-full font-medium">
+        <div className="flex items-center gap-4">
           <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-          <span>Synced</span>
+          <h1 className="text-xl font-bold">Daigler25</h1>
+        </div>
+        <div>
+          <form action={handleLogout}>
+            <button type="submit" className="">Sign Out</button>
+          </form>
+          
         </div>
       </div>
     );
