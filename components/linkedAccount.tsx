@@ -7,12 +7,14 @@ import { useReducer, useState } from 'react'
 function LinkedAccount({ isLinked }: { isLinked: boolean }) {
   const [error, setError] = useState<string | null>(null)
 
+
+  const router = useRouter();
+
   async function handleSubmit(formData: FormData) {
     const result = await linkMoodleAccount(formData);
     if (result?.error) setError(result.error)
+    if (result.success) router.refresh();
   }
-
-  const router = useRouter();
 
   const handleLogout = async () => {
     const result = await unlinkModdleAccount();
@@ -29,10 +31,7 @@ function LinkedAccount({ isLinked }: { isLinked: boolean }) {
           <h1 className="text-xl font-bold">Daigler25</h1>
         </div>
         <div>
-          <form action={handleLogout}>
-            <button type="submit" className="">Sign Out</button>
-          </form>
-          
+            <button onClick={handleLogout} type="submit" className="">Sign Out</button>
         </div>
       </div>
     );
