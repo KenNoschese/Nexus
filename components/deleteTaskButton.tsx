@@ -1,20 +1,20 @@
 "use client";
 
 import { deleteTask } from "@/app/actions";
+import  { CheckSquare, CheckSquare2 } from "lucide-react";
 
 export default function DeleteTaskButton({ taskId }: { taskId: string }) {
   return (
     <button
       onClick={async (e) => {
         e.stopPropagation();
-        if (confirm("Are you sure you want to delete this task?")) {
-          await deleteTask(taskId);
-        }
+        await deleteTask(taskId);
+        
       }}
-      className="text-gray-600 hover:text-red-500 transition-colors px-2 opacity-0 group-hover:opacity-100"
+      className="text-gray-600 hover:text-green-500 hover:cursor-pointer transition-colors px-2  group-hover:opacity-100"
       title="Delete Task"
     >
-      ✕
+      <CheckSquare2 />
     </button>
   );
 }

@@ -1,13 +1,12 @@
 'use client'
 
 import { linkMoodleAccount, unlinkModdleAccount } from '@/app/actions'
+import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useReducer, useState } from 'react'
 
 function LinkedAccount({ isLinked }: { isLinked: boolean }) {
   const [error, setError] = useState<string | null>(null)
-
-
   const router = useRouter();
 
   async function handleSubmit(formData: FormData) {
@@ -31,7 +30,7 @@ function LinkedAccount({ isLinked }: { isLinked: boolean }) {
           <h1 className="text-xl font-bold">Daigler25</h1>
         </div>
         <div>
-            <button onClick={handleLogout} type="submit" className="">Sign Out</button>
+            <button onClick={handleLogout} type="submit" className="hover:cursor-pointer duration-300 hover:scale-110"><LogOut/></button>
         </div>
       </div>
     );
