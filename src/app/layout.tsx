@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "../../components/navigation";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
+      <SpeedInsights />
       <html lang="en" className="dark">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
