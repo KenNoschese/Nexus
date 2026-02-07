@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import DeleteTaskButton from "./deleteTaskButton";
 import CompleteTaskButton from "./completeTaskButton";
-import { Clock, AlertCircle, CheckCircle2, ClipboardList } from 'lucide-react';
+import { Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { tasks } from '@/app/db/schema';
 import UpdateTask from './updateTask';
 
@@ -17,8 +17,9 @@ export default function TaskMainClient({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1 space-y-8">
+    <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Task List Column */}
+        <div className="flex-1 space-y-8 w-full">
             {(['high', 'medium', 'low'] as const).map((level) => (
                 <div key={level} className="space-y-4">
                     <div className="flex items-center gap-2 mb-2">
@@ -82,18 +83,22 @@ export default function TaskMainClient({
             ))}
         </div>
 
-        <div className="w-full lg:w-96 bg-white/5 border border-gray-800 p-6 rounded-2xl flex flex-col h-fit sticky top-6 shadow-2xl backdrop-blur-sm">
-            <h3 className="text-xl font-bold text-white mb-6 border-b border-gray-800 pb-4 flex items-center gap-2">
-                Task Details
-            </h3>
-            
+        {/* Task Details Column */}
+        <div className="w-full lg:w-96 bg-white/5 border border-gray-800 p-6 rounded-2xl flex flex-col h-fit sticky top-20 shadow-2xl backdrop-blur-sm">
             {selectedTask ? (
                 <UpdateTask task={selectedTask} />
             ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-                        <ClipboardList className='w-12 h-12'/>
-                    <p className='mt-2'>Select a task to view details</p>
-                </div>
+                <>
+                    <h3 className="text-xl font-bold text-white mb-6 border-b border-gray-800 pb-4 flex items-center gap-2">
+                        Task Details
+                    </h3>
+                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                        <svg className="w-12 h-12 mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <p>Select a task to view details</p>
+                    </div>
+                </>
             )}
         </div>
     </div>
