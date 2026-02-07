@@ -12,20 +12,31 @@ export async function createTask(formData: FormData) {
 
   const title = formData.get("title") as string;
   const rawEnergyLevel = formData.get("energyLevel") as string;
+  const description = formData.get("description") as string;
+  const rawDueDate = formData.get("due_date") as string;
+  const rawDuration = formData.get("estimated_duration") as string;
+
+  const duration = rawDuration ? Number(rawDuration) : null;
+
   
   if (!title) return;
 
   const validEnergyLevels = ["high", "medium", "low"];
-  const energyLevel = validEnergyLevels.includes(rawEnergyLevel) 
+const energyLevel = validEnergyLevels.includes(rawEnergyLevel) 
     ? (rawEnergyLevel as "high" | "medium" | "low") 
     : "medium";
+
+    const dueDate = rawDueDate ? new Date(rawDueDate) : null;
 
   // Ensure user exists in our DB to satisfy foreign key constraint
   await db.insert(users).values({ id: clerkId }).onConflictDoNothing();
 
   await db.insert(tasks).values({
     title,
+    description,
     energyLevel,
+    dueDate,
+    estimatedDuration: duration,
     userId: clerkId, 
   });
 

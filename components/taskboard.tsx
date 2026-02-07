@@ -46,13 +46,25 @@ export default async function Taskboard() {
                   key={task.id} 
                   className="group bg-white/5 border border-gray-800 p-4 rounded-xl hover:border-gray-600 transition-all cursor-pointer flex justify-between items-start"
                 >
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-1">
                     <span className={`font-medium ${task.status === 'completed' ? 'line-through text-gray-600' : 'text-gray-200'}`}>
                       {task.title}
                     </span>
-                    {task.status !== 'completed' && (
-                      <span className="text-gray-600 group-hover:text-blue-400 text-xs">Active</span>
-                    )}
+                    <div className="flex items-center gap-3">
+                      {task.status !== 'completed' && (
+                        <span className="text-gray-600 group-hover:text-blue-400 text-[10px] uppercase tracking-wider font-semibold">Active</span>
+                      )}
+                      {task.estimatedDuration && (
+                        <span className="text-gray-500 text-[10px] flex items-center gap-1">
+                          <span className="opacity-50">⏱</span> {task.estimatedDuration}m
+                        </span>
+                      )}
+                      {task.dueDate && (
+                        <span className="text-gray-500 text-[10px] flex items-center gap-1">
+                          <span className="opacity-50">📅</span> {new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-2">

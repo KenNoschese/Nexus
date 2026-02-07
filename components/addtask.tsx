@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react"
 import { useState } from "react"
 
 
-function addtask() {
+function AddTask() {
     const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -45,10 +45,18 @@ function addtask() {
             </div>
             {isVisible && (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                <div className="">
+                  <span className="p-2">Task Description</span>
+                  <textarea 
+                    name="description"
+                    className="w-full bg-black/20 border border-gray-700 p-3 mb-2 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    placeholder="Add task description"
+                  />
+                </div>
                 <div>
                   <span className="p-2">Due Date</span>
                   <input
-                    name="title"
+                    name="due_date"
                     type="date"
                     className="w-full bg-black/20 border border-gray-700 p-3 mb-2 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                     required
@@ -57,8 +65,8 @@ function addtask() {
                 <div>
                   <span className="p-2">Est. Time Required</span>
                   <input
-                    name="title"
-                    type="time"
+                    name="estimated_duration"
+                    type="number"
                     className="w-full bg-black/20 border border-gray-700 p-3 mb-2 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                     required
                   />
@@ -74,4 +82,4 @@ function addtask() {
         </section>
   )
 }
-export default addtask
+export default AddTask

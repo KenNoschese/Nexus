@@ -1,7 +1,6 @@
 
 import Taskboard from "../../components/taskboard";
 import Addtask from "../../components/addtask";
-import Progressbar from "../../components/progressbar";
 import LinkedAccount from "../../components/linkedAccount";
 import { currentUser } from "@clerk/nextjs/server";
 import { getEnrolledCourses, logEnrolledCourses, getCourseAssignments } from "../../lib/moodle";
@@ -52,7 +51,6 @@ export default async function Home() {
 
         <Summary />
                 <Addtask />
-                <Progressbar />
                 <Taskboard />
                 <LinkedAccount isLinked={!!metadata?.moodleLinked} />
               </div>
