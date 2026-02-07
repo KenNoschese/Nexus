@@ -4,6 +4,7 @@ import "./globals.css";
 import Navigation from "../../components/navigation";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { dark } from "@clerk/themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{ baseTheme: dark }}>
       <SpeedInsights />
       <html lang="en" className="dark">
         <body

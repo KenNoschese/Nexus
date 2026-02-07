@@ -41,18 +41,26 @@ export default function Navigation() {
           </div>
         </div>
         <header className="flex justify-end items-center p-4 gap-4 h-16">
-            {/* Show the sign-in and sign-up buttons when the user is signed out */}
             <SignedOut>
-              <SignInButton />
-              <SignUpButton>
-                <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+              <SignInButton mode="modal">
+                <button className="text-gray-400 hover:text-white text-sm font-medium transition-colors cursor-pointer">
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-lg shadow-blue-900/20 cursor-pointer">
                   Sign Up
                 </button>
               </SignUpButton>
             </SignedOut>
-            {/* Show the user button when the user is signed in */}
             <SignedIn>
-              <UserButton />
+              <UserButton 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-9 h-9 border border-gray-800"
+                  }
+                }}
+              />
             </SignedIn>
           </header>
         

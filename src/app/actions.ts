@@ -3,7 +3,7 @@
 import { db } from "@/app/db"; 
 import { tasks, users } from "@/app/db/schema";
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export async function createTask(formData: FormData) {
@@ -22,13 +22,12 @@ export async function createTask(formData: FormData) {
   if (!title) return;
 
   const validEnergyLevels = ["high", "medium", "low"];
-const energyLevel = validEnergyLevels.includes(rawEnergyLevel) 
+  const energyLevel = validEnergyLevels.includes(rawEnergyLevel) 
     ? (rawEnergyLevel as "high" | "medium" | "low") 
     : "medium";
 
     const dueDate = rawDueDate ? new Date(rawDueDate) : null;
 
-  // Ensure user exists in our DB to satisfy foreign key constraint
   await db.insert(users).values({ id: clerkId }).onConflictDoNothing();
 
   await db.insert(tasks).values({
@@ -45,6 +44,32 @@ const energyLevel = validEnergyLevels.includes(rawEnergyLevel)
 
 export async function deleteTask(taskId: string) {
   await db.delete(tasks).where(eq(tasks.id, taskId));
+  revalidatePath("/");
+}
+
+export async function completeTask(taskId: string) {
+  await db.update(tasks)
+    .set({ 
+      status: 'completed',
+      completedAt: new Date()
+    })
+    .where(eq(tasks.id, taskId));
+  revalidatePath("/");
+}
+
+export async function updateTask(taskId: string, data: {
+  title?: string;
+  description?: string | null;
+  energyLevel?: "high" | "medium" | "low";
+  dueDate?: Date | null;
+  estimatedDuration?: number | null;
+}) {
+  await db.update(tasks)
+    .set({
+      ...data,
+      updatedAt: new Date(),
+    })
+    .where(eq(tasks.id, taskId));
   revalidatePath("/");
 }
 

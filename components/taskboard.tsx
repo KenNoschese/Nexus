@@ -1,6 +1,7 @@
 import { db } from "@/app/db";
 import { tasks } from "@/app/db/schema";
 import DeleteTaskButton from "./deleteTaskButton";
+import CompleteTaskButton from "./completeTaskButton";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
@@ -54,6 +55,9 @@ export default async function Taskboard() {
                       {task.status !== 'completed' && (
                         <span className="text-gray-600 group-hover:text-blue-400 text-[10px] uppercase tracking-wider font-semibold">Active</span>
                       )}
+                      {task.status === 'completed' && (
+                        <span className="text-green-600 text-[10px] uppercase tracking-wider font-semibold">Completed</span>
+                      )}
                       {task.estimatedDuration && (
                         <span className="text-gray-500 text-[10px] flex items-center gap-1">
                           <span className="opacity-50">⏱</span> {task.estimatedDuration}m
@@ -67,10 +71,8 @@ export default async function Taskboard() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    {task.status === 'completed' && (
-                      <span className="text-green-500 text-sm">✓</span>
-                    )}
+                  <div className="flex items-center gap-1">
+                    <CompleteTaskButton taskId={task.id} isCompleted={task.status === 'completed'} />
                     <DeleteTaskButton taskId={task.id} />
                   </div>
                 </div>
